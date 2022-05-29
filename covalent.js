@@ -2,15 +2,14 @@ const https = require("https");
 const fs = require("fs");
 var BigNumber = require("bignumber.js");
 var mysql = require("mysql");
-//var connectionDB = require('./db_connection.js');
+
 
 const URL_CONTRACT_TOKENS =
   "https://api.covalenthq.com/v1/1/tokens/0xe4605d46fd0b3f8329d936a8b258d69276cba264/nft_token_ids/?key=ckey_a0ec30e6d6aa4f2e8227de3767d";
-const URL_ADDRESS_BALANCE =
-  "https://api.covalenthq.com/v1/1/address/0xB627d47F80974cf3eD50e00C15965909b1E07E15/balances_v2/?quote-currency=USD&format=JSON&nft=true&no-nft-fetch=true&key=ckey_a0ec30e6d6aa4f2e8227de3767d";
+
 const URL_TOKEN_TRANSACTIONS = "https://api.covalenthq.com/v1/1/tokens/0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB/nft_transactions/2928/?quote-currency=USD&format=JSON&key=ckey_a0ec30e6d6aa4f2e8227de3767d"
 
-//conectarea la baza de date
+//creare conexiune la baza de date
 var con = mysql.createConnection({
   host: "localhost",
   database: "nft_db",
@@ -20,66 +19,46 @@ var con = mysql.createConnection({
 
 
 
-// https.get(URL_ADDRESS_BALANCE, (resp) => {
-//     let data = '';
 
-//     // A chunk of data has been received.
-//     resp.on('data', (chunk) => {
-//       data += chunk;
-//     });
 
-//     // The whole response has been received. Print out the result.
-//     resp.on('end', () => {
-
-//       var recv = JSON.parse(data);
-//     //   for (let i = 0; i < recv["data"]["items"].length; i++) {
-//     //     if(recv["data"]["items"][i]["nft_data"] != null)
-//     //     {
-//     //         console.log("==========="+ i+ "===========");
-//     //         console.log(recv["data"]["items"][i]);
-//     //     }
-//     //   }
-
-//     });
-
-//   }).on("error", (err) => {
-//     console.log("Error: " + err.message);
-//   });
+//functie pentru a obtine token id pentru un contract
 console.log("===");
-// https.get(URL_CONTRACT_TOKENS, (resp) => {
-//   let data = '';
+https.get(URL_CONTRACT_TOKENS, (resp) => {
+  let data = '';
 
-//   // A chunk of data has been received.
-//   resp.on('data', (chunk) => {
-//     data += chunk;
-//   });
+  // A chunk of data has been received.
+  resp.on('data', (chunk) => {
+    data += chunk;
+  });
 
-//   // The whole response has been received. Print out the result.
-//   resp.on('end', () => {
+  // The whole response has been received. Print out the result.
+  resp.on('end', () => {
 
-//     var x = JSON.parse(data);
-//     con.connect(function(err) {
-//         if (err) throw err;
-//         console.log("Connected!");
-//         for(let i =0; i< x["data"]["items"].length;i++)
-//         {
-//             //var contract_address =x["data"]["items"][i]["contract_address"];
-//             var token_id = x["data"]["items"][i]["token_id"];
-//             var sql = "INSERT INTO tokens (token_id, collection_id) VALUES ("+ token_id +" ," + 2 +" )";
-//             con.query(sql, function (err, result) {
-//             if (err) throw err;
-//             console.log(i +" record inserted");
-//             });
-//         }
-//       });
-//     // console.log(x["data"]["items"][0]["contract_address"]);
-//     // console.log(x["data"]["items"][0]["token_id"]);
-//   });
+    var x = JSON.parse(data);
+    con.connect(function(err) {
+        if (err) throw err;
+        console.log("Connected!");
+        for(let i =0; i< x["data"]["items"].length;i++)
+        {
+    
+            var token_id = x["data"]["items"][i]["token_id"];
+            var sql = "INSERT INTO tokens (token_id, collection_id) VALUES ("+ token_id +" ," + 2 +" )";
+            con.query(sql, function (err, result) {
+            if (err) throw err;
+            console.log(i +" record inserted");
+            });
+        }
+      });
+    
+  });
 
-// }).on("error", (err) => {
-//   console.log("Error: " + err.message);
-// });
+}).on("error", (err) => {
+  console.log("Error: " + err.message);
+});
 console.log("==")
+
+//functie pentru a obtine token transactions
+//conectarea la baza de date
 
 con.connect(function(err) {
   //if (err) throw err;
@@ -146,7 +125,10 @@ https.get(URL, (resp) => {
 
 }
 });
+
+
 console.log("==");
+//doar o functie care sa afiseze in fisirele json spatiat obiecte de tip json
 // function JSONstringify(json) {
 //   if (typeof json != "string") {
 //     json = JSON.stringify(json, undefined, "\t");
