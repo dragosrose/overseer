@@ -1,72 +1,87 @@
-//const express = require('express');
-//const app = express();
-//const port = 3000;
-//const dotenv = require('dotenv');
-//const  collectionsContracts =  require('./collectionsContracts.json')
+import {con} from './db_connection.js';
+import dotenv from 'dotenv';
+import bodyParser from 'body-parser';
+import  Express  from 'express';
+const app = Express();
+const port = 3000;
+//import notes from ('../controllers/note.controller.js');
+// const dotenv = require('dotenv');
+// const  collectionsContracts =  require('./collectionsContracts.json')
 // const Web3 = require("web3")
 // const hdwalletprovider = require("hdwalletprovider")
 // const opensea = require("opensea-js");
 // const OpenSeaPort = opensea.OpenSeaPort;
 // const Network = opensea.Network;
 
+dotenv.config();
+const COVALENT_KEY = process.env.COVALENT_KEY;
+const OPENSEA_KEY = process.env.OPENSEA_KEY;
 
 
-// dotenv.config();
-// const COVALENT_KEY = process.env.COVALENT_KEY;
-// const OPENSEA_KEY = process.env.OPENSEA_KEY;
-
-// const provider =new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/f262e1f29cb94550b1531fac6910505c')
-
-
-// const seaport = new OpenSeaPort(provider, {
-//   networkName: Network.Main,
-//   apiKey: OPENSEA_KEY
-//},(arg) => console.log(arg))
-
-// console.log(seaport);
-
-// const assetPromise =  seaport.api.getAsset({
-//   tokenAddress: '0x3F1d193884Fd596e2B2110759F314118Af410CED',
-//   tokenId: '4398',
-// })
-// assetPromise.then(asset => {
-//   console.log(asset.description);})
-
-
-
-
-
-//TEST PENTRU CONECTAREA LA OPENSEA STREAM API
-
- import { OpenSeaStreamClient } from '@opensea/stream-js';
- import { EventType } from '@opensea/stream-js';
- import { WebSocket } from 'ws';
-  
-const client = new OpenSeaStreamClient({
-   token: process.env.OPENSEA_KEY,
-   connectOptions: {
-      transport: WebSocket
-    }
+con.connect(function(err) {
+  if (err) throw err;
+  console.log("Connected!");
 });
 
-client.onEvents(
-  '*',
-  [EventType.ITEM_RECEIVED_OFFER, EventType.ITEM_TRANSFERRED],
-  (event) => {
-    console.log(event);
+// parse requests of content-type - application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }))
+
+// parse requests of content-type - application/json
+app.use(bodyParser.json())
+
+// define a simple route
+app.get('/', (req, res) => {
+    res.json({"message": "Welcome to EasyNotes application. Take notes quickly. Organize and keep track of all your notes."});
+});
+
+app.post('/GetWhaleByContractAddress', (req, res) => {
+  var sql = "SELECT * FROM nft_collection where contract_address = '"+ req.body.contract_address +"'";
+  con.query(sql, function (err, result) {
+     if (err) throw err;
+     var sql2 = "SELECT SUM(token_best_bid),COUNT(id), token_owner FROM tokens where collection_id = "+result[0]['id']+" GROUP BY token_owner order  by COUNT(id) desc;"
+     con.query(sql2, function (err, result2) {
+        if (err) throw err;
+        let list = [];
+        for(let i = 0; i< result2.length; i++)
+        {
+          
+            if(result2[i]['COUNT(id)'] >=10 && result2[i]['SUM(token_best_bid)'] >=50)
+            {
+                
+                list.push({whale_address: result2[i]['token_owner'], nft_number: result2[i]['COUNT(id)'], nfts_sum: result2[i]['SUM(token_best_bid)']})
+            }
+           
+        }
+        res.json(list);
+        
+     }); 
+     
+  });
+
+});
+
+app.post('/GetTransactionByID', (req, res) => {
+  //console.log(req);
+  if(req.body.id == undefined)
+  {
+    res.status(400).json('Missing id');
   }
-);
+  else{
+  var sql = "SELECT * FROM nft_collection where contract_address = '"+ req.body.contract_address +"'";
+  con.query(sql, function (err, result) {
+     if (err) throw err;
+     var sql2= "SELECT * FROM tokens where token_id = "+ req.body.id +" and collection_id = "+ result[0]["id"] +"";
+     con.query(sql2, function (err, result2) {
+         if (err) throw err;
+         var sql3 = "SELECT * FROM transactions where token_id = "+ result2[0]['id'] +"";
+         con.query(sql3, function (err, result3) {
+             if (err) throw err;
+             res.json(result3);
+             
+         });
+     });
+  });  }
 
-// client.onItemListed('*', (event) => {
-//   console.log("====================================")
-//   console.log(event);
-// });
-// client.onItemCancelled('*', (event) =>{
-//   console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%")
-//   console.log(event);
-// });
+});
 
-
-// client.onItemListed(['doodles-official','ainightbirds','boredapeyachtclub','goblintownwtf'], (event) => {
-//   console.log(event);
-// });
+app.listen(port, () => console.log(`Example app listening at http://localhost:${port}`));
