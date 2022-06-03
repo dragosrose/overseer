@@ -5,9 +5,9 @@ var mysql = require("mysql");
 
 
 const URL_CONTRACT_TOKENS =
-  "https://api.covalenthq.com/v1/1/tokens/0xe4605d46fd0b3f8329d936a8b258d69276cba264/nft_token_ids/?key=ckey_a0ec30e6d6aa4f2e8227de3767d";
+  "https://api.covalenthq.com/v1/1/tokens/0xe4605d46fd0b3f8329d936a8b258d69276cba264/nft_token_ids/?key=" +covalent_key;
 
-const URL_TOKEN_TRANSACTIONS = "https://api.covalenthq.com/v1/1/tokens/0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB/nft_transactions/2928/?quote-currency=USD&format=JSON&key=ckey_a0ec30e6d6aa4f2e8227de3767d"
+const URL_TOKEN_TRANSACTIONS = "https://api.covalenthq.com/v1/1/tokens/0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB/nft_transactions/2928/?quote-currency=USD&format=JSON&key="+covalent_key;
 
 //creare conexiune la baza de date
 var con = mysql.createConnection({
@@ -65,7 +65,7 @@ con.connect(function(err) {
   console.log("Connected!");
 
 for(let index = 2; index<100;index++){
-const URL = "https://api.covalenthq.com/v1/1/tokens/0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB/nft_transactions/"+index+"/?quote-currency=USD&format=JSON&key=ckey_a0ec30e6d6aa4f2e8227de3767d"
+const URL = "https://api.covalenthq.com/v1/1/tokens/0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB/nft_transactions/"+index+"/?quote-currency=USD&format=JSON&key=" + covalent_key
 https.get(URL, (resp) => {
   let data = '';
 
