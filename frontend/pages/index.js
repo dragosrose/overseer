@@ -3,6 +3,9 @@ import {ethers} from "ethers";
 import Web3Token from "web3-token";
 import {useEffect, useState} from "react";
 import {useLocalStorage} from "../components/useLocalStorage";
+import NFTCard from "../components/NFTCard";
+import {Button, Stack} from "@mui/material";
+import CollectionCard from "../components/CollectionCard";
 
 const Home = () => {
     const {data: account} = useAccount();
@@ -18,6 +21,31 @@ const Home = () => {
 
     const [minutes, setMinutes] = useLocalStorage('minutes', 0);
     const [seconds, setSeconds] = useLocalStorage('seconds', 0);
+
+    const collections = [
+      "azuki",
+      "yureioffcial",
+      "angry-ape-army"
+    ];
+
+    const [isLoading, setLoading] = useState(false);
+    const [collectionsData, setCollectionsData] = useState([]);
+
+    useEffect(() => {
+        let arr = [];
+        const options = {method: 'GET'};
+
+        collections.forEach((col) => {
+            fetch('https://api.opensea.io/api/v1/collection/' + col, options)
+                .then(response => response.json())
+                .then(response => arr.push(response))
+                .catch(err => console.error(err));
+        })
+
+        setCollectionsData(arr);
+
+    }, []);
+
 
     if (account) {
         // Web3 token doesn't work with any wallet besides Metamask :(
@@ -76,32 +104,50 @@ const Home = () => {
             )
         };
 
+
         return (
-            <div className={'py-24 text-center'}>
+            <div className={'py-6 text-center flex flex-col space-y-8'}>
                 <div>
                     {ensName ? `${ensName} (${account.address})` : account.address}
                 </div>
                 <div>Connected to {account?.connector?.name}</div>
-                <div className={'flex justify-center gap-6'}>
-                    <button
-                        className={'rounded bg-slate-200 p-2'}
+                <Stack direction={"row"} justifyContent={"center"} spacing={2}>
+                    <Button variant={"outlined"}
                         onClick={() => disconnect()}
                     >
                         Disconnect
-                    </button>
-                    <button
-                        className={'rounded bg-slate-200 p-2'}
+                    </Button>
+                    <Button variant={"outlined"}
                         onClick={unlock}
                     >
                         {userToken && <Timer></Timer>}
-                        {'Unlock'}
-                    </button>
-                    <button
-                        className={'rounded bg-slate-200 p-2'}
+                        {minutes === 0 && seconds === 0 && 'Unlock'}
+                    </Button>
+                    <Button variant={"outlined"}
+
                         onClick={pressButton}
                     >
                         Press Button
-                    </button>
+                    </Button>
+                </Stack>
+
+                <div className={'flex justify-center'}>
+                    {
+                        minutes === 0 && seconds === 0 ? (
+                            <p>Unlock your wallet.</p>
+                        ) : (
+                            <div className={'grid grid-cols-3 gap-6 p-6'}>
+                                {collectionsData.map((col, key) => {
+                                        return <CollectionCard metadata={col["collection"]}>
+
+                                        </CollectionCard>
+                                    }
+                                )
+                                }
+                            </div>
+
+                        )
+                    }
                 </div>
 
             </div>
@@ -116,7 +162,7 @@ const Home = () => {
                 {connectors.map((connector) => {
                     return (
                         <button
-                            className='rounded bg-slate-200 p-2'
+                            className='rounded bg-slate-200 p-2 text-black'
                             key={connector.id}
                             onClick={() => connect(connector)}
                         >

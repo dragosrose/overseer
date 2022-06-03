@@ -43,7 +43,10 @@ const client = createClient({
 function MyApp({Component, pageProps}) {
     return (
         <Provider client={client}>
-            <Component {...pageProps} />
+            <div className={'bg-gray-800 text-neutral-200'}>
+                <Component {...pageProps} />
+            </div>
+
         </Provider>
     );
 }
