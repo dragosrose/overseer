@@ -43,10 +43,13 @@ const client = createClient({
 function MyApp({Component, pageProps}) {
     return (
         <Provider client={client}>
-            <div className={'bg-gray-800 text-neutral-200'}>
+            <div className={' text-neutral-200'}>
                 <Component {...pageProps} />
             </div>
-
+            <style jsx global>{`
+            body{
+                background-color: #1a2840;
+            }`}</style>
         </Provider>
     );
 }

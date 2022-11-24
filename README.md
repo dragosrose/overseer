@@ -1,20 +1,29 @@
-# The 👁️verseer
-Nothing can escape the all seeing eye. Retrieves information about collection items.
+# 👁️verseer
 
-<div>
-  <h2>Main objectives this platform is trying to achieve</h2>
-  <ul>
-    <li>A table with the collections that have been added to the platform</li>
-    <li>“Whale View” - See the top holders of a specific collection</li>
-    <li>“NFT Ownership Tracing” - See the entire ownership chain of a specific NFT of a collection</li>
-  </ul>
-  <h2>If an API Key is obtained (please <3)</h2>
-    <p>Storing mechanism that receives: </p>
-    <ul>
-      <li>Item Listed events</li>
-      <li>Item Sold events</li>
-      <li>Item Transferred events</li>
-      <li>Item Canceled events</li>
-    </ul>
-  
-</div>
+Web application that retrieves and displays information about NFT collections, more spefically, the Azuki and Angry Ape Army using the [OpenSea API](https://docs.opensea.io/reference/api-overview).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+
+## Learn More
+
+To learn more about wagmi, take a look at the following resources:
+
+- [wagmi Documentation](https://wagmi.sh)
+- [wagmi Repo](https://github.com/tmm/wagmi)
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.

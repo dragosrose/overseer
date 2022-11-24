@@ -8,15 +8,16 @@ import Link from "next/link";
 
 export default function CollectionCard(props) {
 
-    const [url, setUrl] = useState(props.metadata.large_image_url);
+    // console.log(props.metadata.collection.primary_asset_contracts);
+    const [url, setUrl] = useState(props.metadata.collection.large_image_url);
 
     useEffect(() => {
         if(url === null)
-            setUrl(props.metadata.banner_image_url);
+            setUrl(props.metadata.collection.banner_image_url);
     }, [])
 
     return(<Card sx={{ maxWidth: 345 }}>
-        <Link href={'/[collection]'} as={`/${props.metadata.primary_asset_contracts[0].address}`} passHref>
+        <Link href={'/[collection]'} as={`/${props.metadata.collection.primary_asset_contracts[0].address}`} passHref>
 
 
         <CardActionArea>
@@ -28,10 +29,10 @@ export default function CollectionCard(props) {
             />
             <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
-                    {props.metadata.name}
+                    {props.metadata.collection.name}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    {props.metadata.short_description}
+                    {props.metadata.collection.short_description}
                 </Typography>
 
             </CardContent>

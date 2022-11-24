@@ -24,7 +24,6 @@ const Home = () => {
 
     const collections = [
       "azuki",
-      "yureioffcial",
       "angry-ape-army"
     ];
 
@@ -55,10 +54,10 @@ const Home = () => {
 
         const unlock = async () => {
             const token = await Web3Token.sign(async msg => await signer.signMessage(msg), {
-                expires_in: '1 minute'
+                expires_in: '5 minute'
             });
             setToken(token);
-            setMinutes(1);
+            setMinutes(5);
             setSeconds(0);
             console.log(token);
 
@@ -123,12 +122,7 @@ const Home = () => {
                         {userToken && <Timer></Timer>}
                         {minutes === 0 && seconds === 0 && 'Unlock'}
                     </Button>
-                    <Button variant={"outlined"}
-
-                        onClick={pressButton}
-                    >
-                        Press Button
-                    </Button>
+                    
                 </Stack>
 
                 <div className={'flex justify-center'}>
@@ -136,9 +130,10 @@ const Home = () => {
                         minutes === 0 && seconds === 0 ? (
                             <p>Unlock your wallet.</p>
                         ) : (
-                            <div className={'grid grid-cols-3 gap-6 p-6'}>
-                                {collectionsData.map((col, key) => {
-                                        return <CollectionCard metadata={col["collection"]}>
+                            <div className={'grid grid-cols-2 gap-10 m-10'}>
+                                {
+                                collectionsData.map((col, key) => {
+                                        return <CollectionCard metadata={col}>
 
                                         </CollectionCard>
                                     }

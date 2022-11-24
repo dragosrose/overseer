@@ -50,7 +50,7 @@ export default function ProfileCard(props) {
                     onClose={handleClose}
 
                 >
-                    <DialogContent style={{height: '80vh', width: '80vh'}}>
+                    <DialogContent style={{height: '60vh', width: '100vh'}}>
                         <Image loader={imageLoader}
                                src={props.metadata.image_url}
                                alt={'modal image'}
