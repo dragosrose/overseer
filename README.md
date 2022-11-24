@@ -2,6 +2,13 @@
 
 Web application that retrieves and displays information about NFT collections, more spefically, the Azuki and Angry Ape Army using the [OpenSea API](https://docs.opensea.io/reference/api-overview).
 
+
+
+https://user-images.githubusercontent.com/79592589/203669525-7e9a0695-26cf-4fec-ae3f-71423d61b9c1.mp4
+
+
+
+
 ## Getting Started
 
 First, run the development server:
